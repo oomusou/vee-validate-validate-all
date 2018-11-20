@@ -29,19 +29,32 @@ const data = function() {
 };
 
 /** methods */
+/** 產生 showError()，目的在僅執行一次，所以使用 closure 包住 count */
+const createShowError = function() {
+  let count = 0;
+
+  return () => {
+    count++;
+    if (count <= 1) {
+      alert(this.errors.items[0].msg);
+      const name = this.errors.items[0].field;
+      this.$root.$el.querySelector(`[name=${name}]`).focus();
+    }
+  };
+};
+
+/** 執行所有 component 的 validate() */
+const validateAll = (component, showFunc) => {
+  if (Object.prototype.hasOwnProperty.call(component, '$validator'))
+    component.$validator.validate().then(result => result || showFunc());
+
+  component.$children.forEach(component => validateAll(component, showFunc));
+};
+
+/** Submit Handler */
 const onSubmit = function() {
-  const hasError = this.errors.items.length;
-  const showFirstErrorMessage = () => alert(this.errors.items[0].msg);
-  const name = this.errors.items[0].field;
-  const setFocusOnErrorComponent = () => this.$root.$el.querySelector(`[name=${name}]`).focus();
-
-  if (hasError) {
-    showFirstErrorMessage();
-    setFocusOnErrorComponent();
-    return;
-  }
-
-  alert('no error');
+  const showError = createShowError.call(this);
+  validateAll(this.$root, showError);
 };
 
 const methods = {

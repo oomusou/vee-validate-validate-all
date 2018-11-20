@@ -22,6 +22,9 @@ module.exports = {
     'no-shadow': 'off',
     'camelcase': 'off',
     'no-alert': 'off',
+    'curly': 'off',
+    'nonblock-statement-body-position': 'off',
+    'no-plusplus': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
