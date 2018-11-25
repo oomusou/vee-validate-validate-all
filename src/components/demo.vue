@@ -30,7 +30,9 @@ import validator from '../validators/email';
 /** VeeValidate */
 validator();
 
-/** data */
+/** ---------------------------------------------------------------------------
+ | data
+ *----------------------------------------------------------------------------*/
 const data = function() {
   return {
     customEmail1: '',
@@ -38,7 +40,6 @@ const data = function() {
   };
 };
 
-/** methods */
 /** 產生 showError()，目的在僅執行一次，所以使用 closure 包住 count */
 const showError = function() {
   if (showError.once) return;
@@ -57,6 +58,9 @@ const validateAll = (component, showFunc) => {
   component.$children.forEach(component => validateAll(component, showFunc));
 };
 
+/** ---------------------------------------------------------------------------
+ | methods
+ *----------------------------------------------------------------------------*/
 /** Submit Handler */
 const onSubmit = function() {
   validateAll(this.$root, showError.bind(this));
