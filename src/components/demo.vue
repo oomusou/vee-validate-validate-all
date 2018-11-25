@@ -1,13 +1,22 @@
 <template>
   <div>
     <div>
-      <input v-model="customEmail"
+      <input v-model="customEmail1"
              v-validate="'required|custom-email'"
-             name="customEmailAddress"
+             name="customEmailAddress1"
              type="text">
     </div>
     <div>
-      <span>{{ errors.first('customEmailAddress') }}</span>
+      <input v-model="customEmail2"
+             v-validate="'required|custom-email'"
+             name="customEmailAddress2"
+             type="text">
+    </div>
+    <div>
+      {{ errors.first('customEmailAddress1') }}
+    </div>
+    <div>
+      {{ errors.first('customEmailAddress2') }}
     </div>
     <div>
       <button @click="onSubmit">Submit</button>
@@ -18,43 +27,39 @@
 <script>
 import validator from '../validators/email';
 
+/** VeeValidate */
 validator();
 
 /** data */
 const data = function() {
   return {
-    email: '',
-    customEmail: '',
+    customEmail1: '',
+    customEmail2: '',
   };
 };
 
 /** methods */
 /** 產生 showError()，目的在僅執行一次，所以使用 closure 包住 count */
-const createShowError = function() {
-  let count = 0;
+const showError = function() {
+  if (showError.once) return;
 
-  return () => {
-    count++;
-    if (count <= 1) {
-      alert(this.errors.items[0].msg);
-      const name = this.errors.items[0].field;
-      this.$root.$el.querySelector(`[name=${name}]`).focus();
-    }
-  };
+  alert(this.errors.items[0].msg);
+  const name = this.errors.items[0].field;
+  this.$root.$el.querySelector(`[name=${name}]`).focus();
+
+  showError.once = true;
 };
 
 /** 執行所有 component 的 validate() */
 const validateAll = (component, showFunc) => {
-  if (Object.prototype.hasOwnProperty.call(component, '$validator'))
-    component.$validator.validate().then(result => result || showFunc());
-
+  const validator = component.$validator;
+  validator && validator.validate().then(result => result || showFunc());
   component.$children.forEach(component => validateAll(component, showFunc));
 };
 
 /** Submit Handler */
 const onSubmit = function() {
-  const showError = createShowError.call(this);
-  validateAll(this.$root, showError);
+  validateAll(this.$root, showError.bind(this));
 };
 
 const methods = {

@@ -25,6 +25,7 @@ module.exports = {
     'curly': 'off',
     'nonblock-statement-body-position': 'off',
     'no-plusplus': 'off',
+    'no-unused-expressions': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
